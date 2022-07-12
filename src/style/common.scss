@@ -1,0 +1,48 @@
+// *IMPORTS
+@import "./variables.scss";
+
+// *STYLING
+// *RESET
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;   
+}
+img {
+    width: 100%;
+    display: block;
+}
+
+// *COMMON
+body {
+    background-color: #434343;
+}
+section {
+    padding-block: $section-padding-block;
+}
+.container {
+    margin: 0 auto;
+    width: 90%;
+}
+.flex {
+    display: flex;
+}
+.logo {
+    font-size: 1.3rem;
+    color: #f00;
+}
+.card {
+    width: calc((100% / 5) - 1rem);
+    border: 1px solid #f00;
+    background-color: #fff;
+}
+.card-image > img {
+    aspect-ratio: 2/3;
+    object-fit: cover;
+}
+.original-lang .flag {
+    width: 30px;
+    border: 1px solid black;
+}
