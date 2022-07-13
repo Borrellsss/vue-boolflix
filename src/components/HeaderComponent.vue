@@ -3,10 +3,10 @@
         <div class="container">
             <div class="flex">
                 <div class="logo">
-                    <h2>BOOLFLIX</h2>
+                    <img src="../assets/img/boolflix-logo.png" alt="boolflix logo">
                 </div>
                 <div class="search">
-                    <input type="text" v-model="title" placeholder="Search">
+                    <input @keyup.enter="$emit('axiosFilmsCall', title), $emit('axiosSeriesCall', title)" type="text" v-model="title" placeholder="Search">
                     <button @click="$emit('axiosFilmsCall', title), $emit('axiosSeriesCall', title)">Search</button>
                 </div>
             </div>
@@ -32,8 +32,13 @@ export default {
 // *STYLING
 header {
     height: $header-height;
-    background-color: #000;
+    background-color: rgba(0, 0, 0, 0);
+    transition: all 300ms;
 
+    &:hover {
+        background-color: #000;
+        box-shadow: 0 0 10px #000;
+    }
     .container {
 
         .flex {

@@ -1,24 +1,23 @@
 <template>
   <section>
     <div class="container">
-      <div class="flex">
-        <div class="card" v-for="element in thisFilmsArray" :key="element.id">
-          <div class="card-image">
-            <img :src="`https:image.tmdb.org/t/p/w342${element.poster_path}`" alt="">
-          </div>
-          <div class="card-info">
-            <h3>Title: {{element.title}}</h3>
-            <h4>Original Title:{{element.original_title}}</h4>
-            <div class="original-lang">
-              <img class="flag" :src="displayFlagImg(element.original_language)" :alt="element.original_language">
-            </div>
-            <div class="vote">
-              <span>Vote: {{element.vote_average}}</span>
-            </div>
-          </div>
+      <div v-if="thisFilmsArray.length > 0" class="films">
+        <h2>Movies</h2>
+        <div v-hscroll class="flex">
+            <FilmCardComponent v-for="element in thisFilmsArray" :key="element.id" :thisFilm="element"/>
         </div>
-        <!-- <TvSeriesCardComponent v-for="element in thisFilmsArray" :key="element.id" :thisSeriesObject="element"/> -->
-        <TvSeriesCardComponent v-for="element in thisSeriesArray" :key="element.id" :thisSeriesObject="element"/>
+      </div>
+      <div v-else class="films not-found">
+        <h2>Movie not Found</h2>
+      </div>
+      <div v-if="thisSeriesArray.length > 0" class="tv-series">
+        <h2>TV Series</h2>
+        <div v-hscroll class="flex">
+          <TvSeriesCardComponent v-for="element in thisSeriesArray" :key="element.id" :thisSeries="element"/>
+        </div>
+      </div>
+      <div v-else class="tv-series not-found">
+        <h2>TV Series not Found</h2>
       </div>
     </div>
   </section>
@@ -26,7 +25,7 @@
 
 <script>
 // *IMPORTS
-import FilmCardComponent from "./ ";
+import FilmCardComponent from "./FilmCardComponent.vue";
 import TvSeriesCardComponent from "./TvSeriesCardComponent.vue";
 
 export default {
@@ -41,29 +40,11 @@ export default {
   },
   data() {
     return {
-      flagPath: "https://countryflagsapi.com/svg/",
+      
     }
   },
   methods: {
-    displayFlagImg(lang) {
-      if(lang === "en") {
-        lang = "us";
-      } else if (lang === "ja") {
-        lang = "jp";
-      } else if (lang === "hi") {
-        lang = "in";
-      } else if (lang === "cs") {
-        lang = "cz";
-      } else if (lang === "ko") {
-        lang = "kr";
-      } else if (lang === "sv") {
-        lang = "ch";
-      } else {
-        lang
-      }
-
-      return this.flagPath + lang;
-    },
+    
   },
   mounted() {
     
@@ -72,16 +53,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// *COMMON
 .flex {
-  gap: 1.2rem;
-  flex-wrap: wrap;
+  gap: 0.5rem;
+  overflow-x: auto;
 }
-// .card-image > img {
-//   aspect-ratio: 2/3;
-//   object-fit: cover;
-// }
-// .original-lang .flag {
-//   width: 30px;
-//   border: 1px solid black;
-// }
+.tv-series {
+  margin-top: 2rem;
+}
+h2 {
+  margin-bottom: 0.3rem;
+  color: #fff;
+}
 </style>

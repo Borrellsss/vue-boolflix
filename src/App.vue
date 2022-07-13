@@ -34,7 +34,7 @@ export default {
       // !DEBUG
       // console.log(this.filmTitle);
 
-      this.axiosFilmsUrl = `https://api.themoviedb.org/3/search/movie?api_key=f1240ec31fc689a8980fbeb47322e5ec&language=it-IT&query=${this.filmTitle}`;
+      this.axiosFilmsUrl = `https://api.themoviedb.org/3/search/movie?api_key=f1240ec31fc689a8980fbeb47322e5ec&language=en-US&query=${this.filmTitle}`;
       // !DEBUG
       // console.log(this.axiosFilmsUrl);
 
@@ -52,7 +52,7 @@ export default {
       // !DEBUG
       console.log(this.seriesTitle);
 
-      this.axiosSeriesUrl = `https://api.themoviedb.org/3/search/tv?api_key=f1240ec31fc689a8980fbeb47322e5ec&language=it-IT&query=${this.seriesTitle}`;
+      this.axiosSeriesUrl = `https://api.themoviedb.org/3/search/tv?api_key=f1240ec31fc689a8980fbeb47322e5ec&language=en-US&query=${this.seriesTitle}`;
       // !DEBUG
       console.log(this.axiosSeriesUrl);
 
@@ -66,6 +66,26 @@ export default {
       });
     }
   },
+  mounted() {
+    this.axiosFilmsUrl = "https://api.themoviedb.org/3/movie/top_rated?api_key=f1240ec31fc689a8980fbeb47322e5ec&language=en-US&page=1";
+    this.axiosSeriesUrl = "https://api.themoviedb.org/3/tv/top_rated?api_key=f1240ec31fc689a8980fbeb47322e5ec&language=en-US&page=1";
+    axios.get(this.axiosFilmsUrl).then((response) => {
+      // !DEBUG
+      // console.log(response.data);
+
+      this.filmsArray = response.data.results;
+      // !DEBUG
+      console.log(this.filmsArray);
+    });
+    axios.get(this.axiosSeriesUrl).then((response) => {
+      // !DEBUG
+      console.log(response.data);
+
+      this.seriesArray = response.data.results;
+      // !DEBUG
+      console.log(this.seriesArray);
+    });
+  }
 }
 </script>
 
