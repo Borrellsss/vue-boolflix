@@ -1,45 +1,45 @@
 <template>
   <div class="card">
     <div class="card-image">
-      <img v-if="thisSeries.poster_path !== null" :src="`https:image.tmdb.org/t/p/w342${thisSeries.poster_path}`" :alt="thisSeries.name">
-      <img v-else src="../assets/img/image-not-found-3.png" :alt="thisSeries.name">
+      <img v-if="thisElement.poster_path !== null" :src="`https:image.tmdb.org/t/p/w500${thisElement.poster_path}`" :alt="thisElement.title">
+      <img v-else src="../assets/img/image-not-found-3.png" :alt="thisElement.title">
     </div>
-    <div class="card-info">
+    <div class="card-info flex">
       <div class="title">
         <span>
-          <strong>Name: </strong>
-          {{thisSeries.name}}
+          <strong>Title: </strong>
+          {{thisElement.title ? thisElement.title : thisElement.name}}
         </span>
       </div>
-      <div v-if="thisSeries.original_name !== thisSeries.name" class="original-title">
+      <div v-if="thisElement.original_title !== thisElement.title || thisElement.original_name !== thisElement.name" class="original-title">
         <span>
-          <strong>Original Name: </strong>
-          {{thisSeries.original_name}}
+          <strong>Original Title: </strong>
+          {{thisElement.original_title ? thisElement.original_title : thisElement.original_name}}
         </span>
       </div>
       <div class="vote">
-        <span v-for="(element, index) in 5" :key="index" class="star" :class="{'full-star': (index + 1) <= voteConverter(thisSeries.vote_average)}">
+        <span v-for="(element, index) in 5" :key="index" class="star" :class="{'full-star': (index + 1) <= voteConverter(thisElement.vote_average)}">
           <i class="fa-solid fa-star"></i>
         </span>
       </div>
-      <div v-if="thisSeries.overview !== ''" class="plot">
+      <div v-hscroll v-if="thisElement.overview !== ''" class="plot">
         <p>
           <strong>Overview: </strong>
-          {{thisSeries.overview}}
+          {{thisElement.overview}}
         </p>
       </div>
     </div>
     <div class="original-lang">
-      <img class="flag" :src="displayFlagImg(thisSeries.original_language)" :alt="thisSeries.original_language">
+      <img class="flag" :src="displayFlagImg(thisElement.original_language)" :alt="thisElement.original_language">
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "TvSeriesCardComponent",
+  name: "CardComponent",
   props: {
-    thisSeries: Object,
+    thisElement: Object,
   },
   data() {
     return {

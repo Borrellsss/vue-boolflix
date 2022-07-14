@@ -1,19 +1,19 @@
 <template>
   <section>
     <div class="container">
-      <div v-if="thisFilmsArray.length > 0" class="films">
+      <div v-if="thisMoviesArray.length > 0" class="movies">
         <h2>Movies</h2>
         <div v-hscroll class="flex">
-            <FilmCardComponent v-for="element in thisFilmsArray" :key="element.id" :thisFilm="element"/>
+          <CardComponent v-for="element in thisMoviesArray" :key="element.id" :thisElement="element"/>
         </div>
       </div>
-      <div v-else class="films not-found">
+      <div v-else class="movies not-found">
         <h2>Movie not Found</h2>
       </div>
       <div v-if="thisSeriesArray.length > 0" class="tv-series">
         <h2>TV Series</h2>
         <div v-hscroll class="flex">
-          <TvSeriesCardComponent v-for="element in thisSeriesArray" :key="element.id" :thisSeries="element"/>
+          <CardComponent v-for="element in thisSeriesArray" :key="element.id" :thisElement="element"/>
         </div>
       </div>
       <div v-else class="tv-series not-found">
@@ -25,17 +25,15 @@
 
 <script>
 // *IMPORTS
-import FilmCardComponent from "./FilmCardComponent.vue";
-import TvSeriesCardComponent from "./TvSeriesCardComponent.vue";
+import CardComponent from "./CardComponent.vue";
 
 export default {
   name: "MainFirstSectionComponent",
   components: {
-    FilmCardComponent,
-    TvSeriesCardComponent,
+    CardComponent,
   },
   props: {
-    thisFilmsArray: Array,
+    thisMoviesArray: Array,
     thisSeriesArray: Array,
   },
   data() {
@@ -58,8 +56,12 @@ export default {
   gap: 0.5rem;
   overflow-x: auto;
 }
-.tv-series {
-  margin-top: 2rem;
+.movies {
+  margin-bottom: 2rem;
+
+  &.not-found {
+    margin-bottom: 0;
+  }
 }
 h2 {
   margin-bottom: 0.3rem;

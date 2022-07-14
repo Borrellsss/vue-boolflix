@@ -1,90 +1,143 @@
 <template>
   <div id="app">
-    <HeaderComponent @axiosFilmsCall="getFilmsArray" @axiosSeriesCall="getSeriesArray"/>
+    <HeaderComponent @axiosCall="getApiCall" @axiosGenresCall="getApiGenresCall"/>
     <main>
-      <MainFirstSectionComponent :thisFilmsArray="filmsArray" :thisSeriesArray="seriesArray"/>
+      <FirstSectionComponent :thisMoviesArray="moviesArray" :thisSeriesArray="seriesArray"/>
     </main>
   </div>
 </template>
 
 <script>
+// *IMPORTS
 import axios from "axios";
 import HeaderComponent from "./components/HeaderComponent.vue";
-import MainFirstSectionComponent from "./components/MainFirstSectionComponent.vue";
+import FirstSectionComponent from "./components/FirstSectionComponent.vue";
 
 export default {
   name: 'App',
   components: {
     HeaderComponent,
-    MainFirstSectionComponent,
+    FirstSectionComponent,
   },
   data() {
     return {
-      filmTitle: "",
-      seriesTitle: "",
-      axiosFilmsUrl: "",
-      axiosSeriesUrl: "",
-      filmsArray: [],
+      title: "",
+      genre: null,
+      apiKey: "?api_key=f1240ec31fc689a8980fbeb47322e5ec",
+      langKey: "&language=en-US",
+      axiosMoviesUrl: "https://api.themoviedb.org/3/search/movie",
+      axiosSeriesUrl: "https://api.themoviedb.org/3/search/tv",
+      axiosMoviesGenreUrl: "https://api.themoviedb.org/3/discover/movie",
+      axiosSeriesGenreUrl: "https://api.themoviedb.org/3/discover/tv",
+      axiosMoviesTopRatedUrl: "",
+      axiosSeriesTopRatedUrl: "",
+      moviesArray: [],
       seriesArray: [],
     }
   },
   methods: {
-    getFilmsArray(title) {
-      this.filmTitle = title.split(" ").join("+");
+    getApiCall(userInput) {
+      this.title = userInput.split(" ").join("+");
       // !DEBUG
-      // console.log(this.filmTitle);
+      // console.log(this.title);
 
-      this.axiosFilmsUrl = `https://api.themoviedb.org/3/search/movie?api_key=f1240ec31fc689a8980fbeb47322e5ec&language=en-US&query=${this.filmTitle}`;
+      if(this.title.length === 0) {
+        this.getHomePage();
+      } else {
+        this.axiosMoviesUrl = "https://api.themoviedb.org/3/search/movie";
+        this.axiosMoviesUrl += `${this.apiKey}${this.langKey}&query=${this.title}`;
+        // !DEBUG
+        // console.log(this.axiosMoviesUrl);
+
+        this.axiosSeriesUrl = "https://api.themoviedb.org/3/search/tv";
+        this.axiosSeriesUrl += `${this.apiKey}${this.langKey}&query=${this.title}`;
+        // !DEBUG
+        // console.log(this.axiosSeriesUrl);
+  
+        axios.get(this.axiosMoviesUrl).then((response) => {
+          // !DEBUG
+          // console.log(response.data);
+  
+          this.moviesArray = response.data.results;
+          // !DEBUG
+          // console.log(this.moviesArray);
+        });
+        axios.get(this.axiosSeriesUrl).then((response) => {
+          // !DEBUG
+          // console.log(response.data);
+
+          this.seriesArray = response.data.results;
+          // !DEBUG
+          // console.log(this.seriesArray);
+        });
+      }
+      userInput = "";
+    },
+    getApiGenresCall(userGenre) {
+      this.genre = userGenre;
       // !DEBUG
-      // console.log(this.axiosFilmsUrl);
+      // console.log(this.genre);
 
-      axios.get(this.axiosFilmsUrl).then((response) => {
+      if(this.genre === "all") {
+        this.getHomePage();
+      } else {
+        this.axiosMoviesGenreUrl = "https://api.themoviedb.org/3/discover/movie";
+        this.axiosMoviesGenreUrl += `${this.apiKey}${this.langKey}&with_genres=${this.genre}`;
+        // !DEBUG
+        // console.log(this.axiosMoviesGenreUrl);
+
+        this.axiosSeriesGenreUrl = "https://api.themoviedb.org/3/discover/tv";
+        this.axiosSeriesGenreUrl += `${this.apiKey}${this.langKey}&with_genres=${this.genre}`;
+        // !DEBUG
+        // console.log(this.axiosSeriesGenreUrl);
+  
+        axios.get(this.axiosMoviesGenreUrl).then((response) => {
+          // !DEBUG
+          console.log(response.data);
+  
+          this.moviesArray = response.data.results;
+          // !DEBUG
+          // console.log(this.moviesArray);
+        });
+        axios.get(this.axiosSeriesGenreUrl).then((response) => {
+          // !DEBUG
+          // console.log(response.data);
+
+          this.seriesArray = response.data.results;
+          // !DEBUG
+          // console.log(this.seriesArray);
+        });
+      }
+    },
+    getHomePage() {
+      this.axiosMoviesUrl = `https://api.themoviedb.org/3/movie/popular${this.apiKey}${this.langKey}&page=1`;
+      // !DEBUG
+      // console.log(this.axiosMoviesUrl);
+
+      this.axiosSeriesUrl = `https://api.themoviedb.org/3/tv/popular${this.apiKey}${this.langKey}&page=1`;
+      // !DEBUG
+      // console.log(this.axiosSeriesUrl);
+
+      axios.get(this.axiosMoviesUrl).then((response) => {
         // !DEBUG
         // console.log(response.data);
 
-        this.filmsArray = response.data.results;
+        this.moviesArray = response.data.results;
         // !DEBUG
-        console.log(this.filmsArray);
+        // console.log(this.moviesArray);
       });
-    },
-    getSeriesArray(title) {
-      this.seriesTitle = title.split(" ").join("+");
-      // !DEBUG
-      console.log(this.seriesTitle);
-
-      this.axiosSeriesUrl = `https://api.themoviedb.org/3/search/tv?api_key=f1240ec31fc689a8980fbeb47322e5ec&language=en-US&query=${this.seriesTitle}`;
-      // !DEBUG
-      console.log(this.axiosSeriesUrl);
-
       axios.get(this.axiosSeriesUrl).then((response) => {
         // !DEBUG
-        console.log(response.data);
+        // console.log(response.data);
 
         this.seriesArray = response.data.results;
         // !DEBUG
-        console.log(this.seriesArray);
+        // console.log(this.seriesArray);
       });
     }
   },
   mounted() {
-    this.axiosFilmsUrl = "https://api.themoviedb.org/3/movie/top_rated?api_key=f1240ec31fc689a8980fbeb47322e5ec&language=en-US&page=1";
-    this.axiosSeriesUrl = "https://api.themoviedb.org/3/tv/top_rated?api_key=f1240ec31fc689a8980fbeb47322e5ec&language=en-US&page=1";
-    axios.get(this.axiosFilmsUrl).then((response) => {
-      // !DEBUG
-      // console.log(response.data);
-
-      this.filmsArray = response.data.results;
-      // !DEBUG
-      console.log(this.filmsArray);
-    });
-    axios.get(this.axiosSeriesUrl).then((response) => {
-      // !DEBUG
-      console.log(response.data);
-
-      this.seriesArray = response.data.results;
-      // !DEBUG
-      console.log(this.seriesArray);
-    });
+    this.getHomePage()
   }
 }
 </script>
