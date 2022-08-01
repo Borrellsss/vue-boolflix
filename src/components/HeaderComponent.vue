@@ -130,4 +130,7 @@ header {
         }
     }
 }
+.header-right-side {
+    gap: 1rem;
+}
 </style>

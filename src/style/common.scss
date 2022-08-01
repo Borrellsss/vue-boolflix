@@ -52,15 +52,19 @@ h2 {
         background-color: #e50914;
     }
 }
-input[type=text] {
-    width: 10rem;
+input[type=text],
+select {
     border: none;
     padding: 0.5em 0.8rem;
     font-size: 0.8rem;
+    background-color: #fff;
 
     &:focus-visible {
         outline: none;
     }
+}
+input[type=text] {
+    width: 10rem;
 }
 .logo img {
     width: 140px;
@@ -79,7 +83,7 @@ input[type=text] {
 
     &:hover .card-info {
         opacity: 1;
-        border: 2px solid #fff;
+        box-shadow: 0 0 0 2px #fff inset;
     }
     &:hover .original-lang {
         opacity: 0;
@@ -102,11 +106,12 @@ input[type=text] {
     background-color: rgba(0, 0, 0, 0.8);
     opacity: 0;
     overflow: hidden;
-    transition: opacity 400ms;
+    transition: all 300ms;
 
     .title,
     .original-title,
-    .vote {
+    .vote,
+    .cast {
         margin-bottom: 0.3rem;
     }
 }

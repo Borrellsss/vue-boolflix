@@ -33,6 +33,9 @@ export default {
       axiosSeriesTopRatedUrl: "",
       moviesArray: [],
       seriesArray: [],
+      homePageArray: ["popular", "top_rated"],
+      randomHomeIndex: "",
+      randomHomePage: "",
     }
   },
   methods: {
@@ -54,22 +57,7 @@ export default {
         // !DEBUG
         // console.log(this.axiosSeriesUrl);
   
-        axios.get(this.axiosMoviesUrl).then((response) => {
-          // !DEBUG
-          // console.log(response.data);
-  
-          this.moviesArray = response.data.results;
-          // !DEBUG
-          // console.log(this.moviesArray);
-        });
-        axios.get(this.axiosSeriesUrl).then((response) => {
-          // !DEBUG
-          // console.log(response.data);
-
-          this.seriesArray = response.data.results;
-          // !DEBUG
-          // console.log(this.seriesArray);
-        });
+        this.axiosMovieAndTVCall(this.axiosMoviesUrl, this.axiosSeriesUrl);
       }
       userInput = "";
     },
@@ -91,53 +79,60 @@ export default {
         // !DEBUG
         // console.log(this.axiosSeriesGenreUrl);
   
-        axios.get(this.axiosMoviesGenreUrl).then((response) => {
-          // !DEBUG
-          console.log(response.data);
-  
-          this.moviesArray = response.data.results;
-          // !DEBUG
-          // console.log(this.moviesArray);
-        });
-        axios.get(this.axiosSeriesGenreUrl).then((response) => {
-          // !DEBUG
-          // console.log(response.data);
-
-          this.seriesArray = response.data.results;
-          // !DEBUG
-          // console.log(this.seriesArray);
-        });
+        this.axiosMovieAndTVCall(this.axiosMoviesGenreUrl, this.axiosSeriesGenreUrl);
       }
     },
     getHomePage() {
-      this.axiosMoviesUrl = `https://api.themoviedb.org/3/movie/popular${this.apiKey}${this.langKey}&page=1`;
+      for(let i = 0; i < this.homePageArray.length; i++) {
+        this.randomHomeIndex = this.getRndInteger(0 , this.homePageArray.length);
+        this.randomHomePage = this.homePageArray[this.randomHomeIndex];
+      }
+      // !DEBUG
+      // console.log(this.randomHomePage);
+
+      this.axiosMoviesUrl = `https://api.themoviedb.org/3/movie/${this.randomHomePage}${this.apiKey}${this.langKey}&page=1`;
       // !DEBUG
       // console.log(this.axiosMoviesUrl);
 
-      this.axiosSeriesUrl = `https://api.themoviedb.org/3/tv/popular${this.apiKey}${this.langKey}&page=1`;
+      this.axiosSeriesUrl = `https://api.themoviedb.org/3/tv/${this.randomHomePage}${this.apiKey}${this.langKey}&page=1`;
       // !DEBUG
       // console.log(this.axiosSeriesUrl);
 
-      axios.get(this.axiosMoviesUrl).then((response) => {
+      this.axiosMovieAndTVCall(this.axiosMoviesUrl, this.axiosSeriesUrl);
+    },
+    axiosMovieAndTVCall(movieUrl, tvUrl) {
+      axios.get(movieUrl).then((response) => {
         // !DEBUG
         // console.log(response.data);
 
         this.moviesArray = response.data.results;
         // !DEBUG
         // console.log(this.moviesArray);
+
+        this.moviesArray.forEach((element) => {
+          element.msIsMovie = true;
+        });
       });
-      axios.get(this.axiosSeriesUrl).then((response) => {
+
+      axios.get(tvUrl).then((response) => {
         // !DEBUG
         // console.log(response.data);
-
+        
         this.seriesArray = response.data.results;
         // !DEBUG
         // console.log(this.seriesArray);
+
+        this.seriesArray.forEach((element) => {
+          element.msIsMovie = false;
+        });
       });
+    },
+    getRndInteger(min, max) {
+      return Math.floor(Math.random() * (max - min)) + min;
     }
   },
   mounted() {
-    this.getHomePage()
+    this.getHomePage();
   }
 }
 </script>

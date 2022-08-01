@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" @mouseenter="getCast(thisElement)">
     <div class="card-image">
       <img v-if="thisElement.poster_path !== null" :src="`https:image.tmdb.org/t/p/w500${thisElement.poster_path}`" :alt="thisElement.title">
       <img v-else src="../assets/img/image-not-found-3.png" :alt="thisElement.title">
@@ -22,6 +22,12 @@
           <i class="fa-solid fa-star"></i>
         </span>
       </div>
+      <div v-if="castArray.length > 0" class="cast">
+        <strong>Cast: </strong>
+        <span v-for="(actor, index) in castArray" :key="index">
+          {{`${actor.name}${castArray[index] !== castArray[castArray.length - 1] ? "," : "..."}`}}
+        </span>
+      </div>
       <div v-hscroll v-if="thisElement.overview !== ''" class="plot">
         <p>
           <strong>Overview: </strong>
@@ -36,6 +42,9 @@
 </template>
 
 <script>
+// *IMPORTS
+import axios from "axios";
+
 export default {
   name: "CardComponent",
   props: {
@@ -43,8 +52,12 @@ export default {
   },
   data() {
     return {
+      apiKey: "?api_key=f1240ec31fc689a8980fbeb47322e5ec",
+      langKey: "&language=en-US",
       flagPath: "https://countryflagsapi.com/svg/",
       roundedVote: null,
+      castArray: [],
+      castUrl: "",
     }
   },
   methods: {
@@ -83,11 +96,27 @@ export default {
     voteConverter(vote) {
       this.roundedVote = vote / 2;
       return Math.round(this.roundedVote);
-    }
+    },
+    getCast(element) {
+      const movieCastUrl = `https://api.themoviedb.org/3/movie/${element.id}/credits${this.apiKey}${this.langKey}`;
+      const tvCastUrl = `https://api.themoviedb.org/3/tv/${element.id}/credits${this.apiKey}${this.langKey}`;
+
+      if(element.msIsMovie) {
+        this.castUrl = movieCastUrl;
+      } else {
+        this.castUrl = tvCastUrl;
+      }
+
+      axios.get(this.castUrl).then((response) => {
+        // !DEBUG
+        // console.log(response.data.cast.splice(0, 5));
+
+        this.castArray = response.data.cast.splice(0, 5);
+        // !DEBUG
+        console.log(this.castArray);
+      });
+    },
   },
-  mounted() {
-    
-  }
 }
 </script>
 
